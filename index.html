@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Bargain Drop — Mega Deals</title>
+<style>
+:root{--bg:#fff;--fg:#111;--muted:#777;--line:#eee;--red:#e60023;--green:#10b981}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--fg);padding-bottom:80px}
+a{color:inherit;text-decoration:none}
+img{display:block}
+.top-bar{display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(90deg,#ff6b6b,#feca57,#ff9ff3,#54a0ff,#5f27cd);background-size:200% 100%;animation:slideGradient 4s linear infinite;padding:6px 0;position:sticky;top:0;z-index:110}
+.top-bar-inner{white-space:nowrap;font-size:0.68rem;font-weight:800;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.3);letter-spacing:1px;animation:scrollText 8s linear infinite}
+@keyframes slideGradient{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+@keyframes scrollText{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+.header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:#fff;position:sticky;top:0;z-index:109;border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:6px}
+.logo-text{font-size:1.15rem;font-weight:900}
+.logo-text .bd-b{background:linear-gradient(135deg,#e60023,#ff4757);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.logo-text .bd-d{color:#111}
+.logo-icon{width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#e60023,#ff6b81);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.65rem;font-weight:900}
+.header-actions{display:flex;align-items:center;gap:14px}
+.header-actions a,.header-actions button{background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:2px}
+.header-actions svg{width:20px;height:20px;stroke:#555;stroke-width:1.8;fill:none}
+.cart-btn{position:relative}
+.cart-count{position:absolute;top:-5px;right:-8px;background:var(--red);color:#fff;font-size:0.55rem;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
+.search-wrap{padding:8px 14px;background:#fff}
+.search-box{display:flex;align-items:center;background:#f5f5f5;border-radius:20px;padding:8px 14px;gap:8px;border:1.5px solid transparent;transition:all .2s}
+.search-box:focus-within{border-color:#111;background:#fff}
+.search-box input{flex:1;border:none;background:transparent;font-size:0.78rem;outline:none;color:var(--fg)}
+.search-box input::placeholder{color:#bbb}
+.search-box svg{width:16px;height:16px;flex-shrink:0;opacity:.5}
+.cat-slider{display:flex;overflow-x:auto;gap:6px;padding:8px 14px;scrollbar-width:none}
+.cat-slider::-webkit-scrollbar{display:none}
+.cat-chip{display:flex;align-items:center;gap:5px;padding:7px 14px;border-radius:20px;background:#f5f5f5;font-size:0.7rem;font-weight:600;white-space:nowrap;cursor:pointer;transition:all .15s;flex-shrink:0;border:1.5px solid transparent}
+.cat-chip:hover{background:#e8e8e8;border-color:#ddd}
+.cat-chip .cc-icon{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.8rem;flex-shrink:0;overflow:hidden}
+.cat-chip .cc-icon img{width:100%;height:100%;object-fit:cover;border-radius:6px}
+.hero{position:relative;margin:0 14px 12px;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,#111,#222);padding:28px 20px;color:#fff;text-align:center}
+.hero h2{font-size:1.3rem;font-weight:900;margin-bottom:4px;background:linear-gradient(90deg,#feca57,#ff9ff3);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:0.75rem;opacity:.8;margin-bottom:12px}
+.hero-btn{display:inline-block;padding:10px 24px;background:#fff;color:#111;border-radius:20px;font-size:0.75rem;font-weight:800;transition:all .15s}
+.hero-btn:hover{transform:scale(1.03)}
+.hero-decor{position:absolute;font-size:3rem;opacity:.12}
+.hero-decor.d1{top:5px;left:10px}
+.hero-decor.d2{bottom:5px;right:10px}
+.filter-bar{padding:8px 14px;display:flex;justify-content:center}
+.filter-toggle{display:flex;align-items:center;gap:6px;padding:10px 20px;background:#111;color:#fff;border:none;border-radius:24px;font-size:0.78rem;font-weight:700;cursor:pointer;transition:all .15s}
+.filter-toggle:hover{opacity:.9;transform:translateY(-1px)}
+.filter-toggle svg{width:16px;height:16px}
+.filter-panel{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-end;justify-content:center}
+.filter-panel.open{display:flex}
+.filter-panel-inner{background:#fff;width:100%;max-height:80vh;border-radius:20px 20px 0 0;overflow-y:auto;padding:20px 16px}
+.filter-panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.filter-panel-header h3{font-size:1rem;font-weight:800}
+.filter-close{background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--muted);padding:4px 8px}
+.filter-group{margin-bottom:16px}
+.filter-group h4{font-size:0.78rem;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.filter-chips{display:flex;flex-wrap:wrap;gap:6px}
+.filter-chip{padding:8px 14px;border-radius:20px;font-size:0.7rem;font-weight:600;cursor:pointer;transition:all .15s;border:1.5px solid var(--line);background:#fff}
+.filter-chip:hover{background:#f5f5f5}
+.filter-chip.active{background:#111;color:#fff;border-color:#111}
+.filter-apply{display:block;width:100%;padding:14px;background:#111;color:#fff;border:none;border-radius:12px;font-size:0.85rem;font-weight:800;cursor:pointer;margin-top:12px}
+.filter-apply:hover{opacity:.9}
+.shop-by-cat{padding:12px 14px}
+.shop-by-cat h3{font-size:0.88rem;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cat-card{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;border-radius:12px;border:1.5px solid var(--line);transition:all .15s;text-align:center;background:#fff;cursor:pointer}
+.cat-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.cat-card-img{width:44px;height:44px;border-radius:10px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:1.4rem;overflow:hidden;flex-shrink:0}
+.cat-card-img img{width:100%;height:100%;object-fit:cover;border-radius:10px}
+.cat-card .cc-label{font-size:0.65rem;font-weight:700;line-height:1.2}
+.cat-card .cc-count{font-size:0.55rem;color:var(--muted)}
+.products-section{padding:12px 14px}
+.products-section h3{font-size:0.88rem;font-weight:800;margin-bottom:10px}
+.product-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.product-card{background:#fff;border-radius:12px;overflow:hidden;border:1px solid var(--line);transition:.15s;cursor:pointer}
+.product-card:hover{box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.product-card .prod-img{aspect-ratio:1;background:#f8f8f8;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.product-card .prod-img img{width:100%;height:100%;object-fit:cover}
+.product-card .prod-badge{position:absolute;top:6px;left:6px;background:var(--red);color:#fff;font-size:0.55rem;font-weight:700;padding:2px 7px;border-radius:6px}
+.product-card .prod-info{padding:8px 10px 10px}
+.product-card .prod-title{font-size:0.72rem;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:4px}
+.product-card .prod-price-row{display:flex;align-items:center;gap:6px}
+.product-card .prod-price{font-size:0.85rem;font-weight:800;color:var(--red)}
+.product-card .prod-compare{font-size:0.62rem;color:var(--muted);text-decoration:line-through}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;z-index:120;padding:4px 0}
+.bottom-nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px;font-size:0.6rem;color:var(--muted);text-decoration:none}
+.bottom-nav a.active{color:var(--fg)}
+.nav-icon{width:20px;height:20px;flex-shrink:0}
+@media(min-width:768px){.product-grid{grid-template-columns:repeat(4,1fr);max-width:960px;margin:0 auto}.cat-grid{grid-template-columns:repeat(6,1fr)}.cat-slider{justify-content:center}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .3s ease-out}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div class="top-bar-inner">🔥 SUMMER MEGA SALE — UP TO 70% OFF — FREE SHIPPING ON ORDERS $29+ — SHOP NOW 🔥</div>
+</div>
+<div class="header">
+  <a href="/" class="logo">
+    <div class="logo-icon">BD</div>
+    <span class="logo-text"><span class="bd-b">BARGAIN</span><span class="bd-d">DROP</span></span>
+  </a>
+  <div class="header-actions">
+    <a href="profile.html" title="Profile"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21c0-4 3.1-7 7-7s7 3 7 7"/></svg></a>
+    <button class="cart-btn" onclick="openCart()" title="Cart"><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1" fill="#555"/><circle cx="20" cy="21" r="1" fill="#555"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg><span class="cart-count" id="cart-count">0</span></button>
+    <a href="settings.html" title="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2"/></svg></a>
+  </div>
+</div>
+<div class="search-wrap">
+  <div class="search-box">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="#777" stroke-width="2" fill="none"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="#777" stroke-width="2"/></svg>
+    <input type="text" id="search-input" placeholder="Search products..." oninput="searchProducts()">
+  </div>
+</div>
+<div class="cat-slider" id="cat-slider"></div>
+<div class="hero">
+  <div class="hero-decor d1">💎</div>
+  <div class="hero-decor d2">⚡</div>
+  <h2>🔥 Summer Mega Sale</h2>
+  <p id="hero-stats">Loading products...</p>
+  <a href="products.html" class="hero-btn">Shop All Products →</a>
+</div>
+<div class="filter-bar">
+  <button class="filter-toggle" onclick="toggleFilter()">
+    <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6" stroke="white" stroke-width="2"/><line x1="8" y1="12" x2="20" y2="12" stroke="white" stroke-width="2"/><line x1="12" y1="18" x2="20" y2="18" stroke="white" stroke-width="2"/><circle cx="4" cy="12" r="1.5" fill="white"/><circle cx="8" cy="18" r="1.5" fill="white"/></svg>
+    Filter Products
+  </button>
+</div>
+<div class="filter-panel" id="filter-panel">
+  <div class="filter-panel-inner">
+    <div class="filter-panel-header">
+      <h3>Filter Products</h3>
+      <button class="filter-close" onclick="closeFilter()">&times;</button>
+    </div>
+    <div class="filter-group">
+      <h4>📂 Main Categories</h4>
+      <div class="filter-chips" id="filter-categories"></div>
+    </div>
+    <div class="filter-group">
+      <h4>📁 Subcategories</h4>
+      <div class="filter-chips" id="filter-subcategories"></div>
+    </div>
+    <div class="filter-group">
+      <h4>💰 Price Range</h4>
+      <div class="filter-chips">
+        <div class="filter-chip price-chip" data-min="0" data-max="10">Under $10</div>
+        <div class="filter-chip price-chip" data-min="10" data-max="25">$10 - $25</div>
+        <div class="filter-chip price-chip" data-min="25" data-max="50">$25 - $50</div>
+        <div class="filter-chip price-chip" data-min="50" data-max="99999">$50+</div>
+      </div>
+    </div>
+    <button class="filter-apply" onclick="applyFilters()">Apply Filters</button>
+  </div>
+</div>
+<div class="shop-by-cat">
+  <h3>🛍️ Shop by Category</h3>
+  <div class="cat-grid" id="cat-grid"></div>
+</div>
+<div class="products-section">
+  <h3>✨ Trending Products</h3>
+  <div class="product-grid" id="product-grid">
+    <div style="text-align:center;padding:40px;grid-column:1/-1;color:var(--muted)">
+      <div class="spinner" style="width:28px;height:28px;border:3px solid #e5e5e5;border-top-color:#111;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px"></div>
+      <p>Loading products...</p>
+    </div>
+  </div>
+</div>
+<nav class="bottom-nav">
+  <a href="/" class="active"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3" stroke="#777" stroke-width="2" fill="none"/></svg>Home</a>
+  <a href="products.html"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1" stroke="#777" stroke-width="1.5" fill="none"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="#777" stroke-width="1.5" fill="none"/></svg>Products</a>
+  <a href="categories.html"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="#777" stroke-width="2"/></svg>Categories</a>
+  <a href="profile.html"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="#777" stroke-width="2" fill="none"/><circle cx="12" cy="7" r="4" stroke="#777" stroke-width="2" fill="none"/></svg>Me</a>
+</nav>
+<script>
+const CACHE_KEY = 'bd_preview_products';
+async function loadData(){
+  try{
+    let prods = [];
+    let c = localStorage.getItem(CACHE_KEY);
+    if(c){ prods = JSON.parse(c) }
+    try{
+      let r = await fetch('all_shopify_products.json',{cache:'no-cache'});
+      if(r.ok){ let d = await r.json(); if(Array.isArray(d) && d.length>0){ prods = d; localStorage.setItem(CACHE_KEY, JSON.stringify(d)) } }
+    }catch(e){}
+    if(prods.length===0){
+      let r = await fetch('categories-data.json',{cache:'no-cache'});
+      if(r.ok){
+        let data = await r.json();
+        for(let cat in data){ prods = prods.concat(data[cat].products || []) }
+        if(prods.length>0) localStorage.setItem(CACHE_KEY, JSON.stringify(prods))
+      }
+    }
+    window._products = prods;
+    renderAll();
+  }catch(e){ console.error(e) }
+}
+function renderAll(){
+  let prods = window._products || [];
+  let catMap = buildCategoryMap(prods);
+  document.getElementById('hero-stats').textContent = 'Browse '+Object.keys(catMap).length+' categories with '+prods.length.toLocaleString()+' products';
+  let slider = document.getElementById('cat-slider');
+  slider.innerHTML = '';
+  let cats = getCategories(catMap);
+  cats.forEach(c => {
+    let d = document.createElement('div');
+    d.className = 'cat-chip';
+    d.onclick = ()=> filterByCategory(c.name);
+    d.innerHTML = '<div class="cc-icon"><img src="'+c.img+'" alt="" onerror="this.parentElement.innerHTML=\''+c.emoji+'\'" loading="lazy"></div>'+c.name;
+    slider.appendChild(d);
+  });
+  let grid = document.getElementById('cat-grid');
+  grid.innerHTML = '';
+  cats.forEach(c => {
+    let card = document.createElement('div');
+    card.className = 'cat-card fade-in';
+    card.onclick = ()=> window.location.href='category.html?cat='+encodeURIComponent(c.name);
+    card.innerHTML = '<div class="cat-card-img"><img src="'+c.img+'" alt="" loading="lazy" onerror="this.parentElement.innerHTML=\''+c.emoji+'\'"></div><div class="cc-label">'+c.name+'</div><div class="cc-count">'+c.count.toLocaleString()+' products</div>';
+    grid.appendChild(card);
+  });
+  renderProducts();
+  buildFilterPanel(cats, catMap);
+  updateCartCount();
+}
+function getCategories(catMap){
+  let cats = [
+    {name:'Jewelry & Watches', emoji:'💍', img:'https://cdn.shopify.com/s/files/1/0596/2893/7384/collections/jewelry.jpg'},
+    {name:'Home & Garden', emoji:'🏠', img:'https://cdn.shopify.com/s/files/1/0596/2893/7384/collections/home_garden.jpg'},
+    {name:'Electronics', emoji:'📱', img:'https://cdn.shopify.com/s/files/1/0596/2893/7384/collections/electronics.jpg'},
+    {name:"Women's Clothing", emoji:'👗', img:'https://cdn.shopify.com/s/files/1/0596/2893/7384/collections/womens_clothing.jpg'},
+    {name:'Beauty & Health', emoji:'💄', img:'https://cdn.shopify.com/s/files/1/0596/2893/7384/collections/beauty.jpg'},
+    {name:"Men's Clothing", emoji:'👔', img:'https://cdn.shopify.com/s/files/1/0596/2893/7384/collections/mens_clothing.jpg'},
+    {name:'Other', emoji:'📦', img:'https://cdn.shopify.com/s/files/1/0596/2893/7384/collections/other.jpg'}
+  ];
+  return cats.map(c => ({...c, count: (catMap[c.name]||[]).length}));
+}
+function buildCategoryMap(prods){
+  let map = {};
+  prods.forEach(p => {
+    let cat = p.category || 'Other';
+    if(!map[cat]) map[cat] = [];
+    map[cat].push(p);
+  });
+  return map;
+}
+function renderProducts(filterProds){
+  let prods = filterProds || window._products || [];
+  let grid = document.getElementById('product-grid');
+  if(!prods.length){ grid.innerHTML = '<div style="text-align:center;padding:40px;grid-column:1/-1;color:var(--muted)">No products found</div>'; return }
+  grid.innerHTML = '';
+  prods.slice(0, 50).forEach(p => {
+    let img = p.image || p.images?.[0] || '';
+    let card = document.createElement('a');
+    card.className = 'product-card fade-in';
+    card.href = 'product.html?id=' + p.id;
+    let disc = '';
+    if(p.compare_at_price && p.compare_at_price > p.price){
+      disc = '<div class="prod-badge">-'+Math.round((1-p.price/p.compare_at_price)*100)+'%</div>';
+    }
+    let imgHtml = img ? '<img src="'+img+'" alt="" loading="lazy">' : '<div style="font-size:4rem;opacity:.2">📦</div>';
+    card.innerHTML = '<div class="prod-img">'+disc+imgHtml+'</div><div class="prod-info"><div class="prod-title">'+escapeHtml(p.title)+'</div><div class="prod-price-row"><span class="prod-price">$'+(p.price||0).toFixed(2)+'</span>'+(p.compare_at_price&&p.compare_at_price>p.price?'<span class="prod-compare">$'+(p.compare_at_price).toFixed(2)+'</span>':'')+'</div></div>';
+    grid.appendChild(card);
+  });
+}
+function searchProducts(){
+  let q = document.getElementById('search-input').value.toLowerCase().trim();
+  let prods = window._products || [];
+  if(!q){ renderProducts(); return }
+  let filtered = prods.filter(p => (p.title||'').toLowerCase().includes(q));
+  renderProducts(filtered);
+}
+function filterByCategory(cat){
+  let prods = window._products || [];
+  renderProducts(prods.filter(p => (p.category||'Other') === cat));
+}
+function buildFilterPanel(cats, catMap){
+  let fc = document.getElementById('filter-categories');
+  fc.innerHTML = '';
+  cats.forEach(c => {
+    let chip = document.createElement('div');
+    chip.className = 'filter-chip cat-filter-chip';
+    chip.textContent = c.name;
+    chip.onclick = function(){ this.classList.toggle('active'); updateSubcatFilter() };
+    fc.appendChild(chip);
+  });
+  let sc = document.getElementById('filter-subcategories');
+  sc.innerHTML = '';
+  cats.forEach(c => {
+    let subs = catMap[c.name] || [];
+    let subMap = {};
+    subs.forEach(p => { let s = p.subcategory||'Other'; subMap[s] = (subMap[s]||0)+1 });
+    Object.keys(subMap).sort().forEach(s => {
+      let chip = document.createElement('div');
+      chip.className = 'filter-chip subcat-filter-chip';
+      chip.textContent = s + ' ('+subMap[s]+')';
+      chip.dataset.category = c.name;
+      chip.dataset.subcategory = s;
+      chip.style.display = 'none';
+      chip.onclick = function(){ this.classList.toggle('active') };
+      sc.appendChild(chip);
+    });
+  });
+}
+function updateSubcatFilter(){
+  let active = Array.from(document.querySelectorAll('.cat-filter-chip.active')).map(c=>c.textContent);
+  document.querySelectorAll('.subcat-filter-chip').forEach(c => {
+    c.style.display = active.length===0 || active.includes(c.dataset.category) ? '' : 'none';
+    if(!active.includes(c.dataset.category)) c.classList.remove('active');
+  });
+}
+document.getElementById('filter-panel').addEventListener('click', function(e){
+  if(e.target === this) closeFilter();
+});
+function toggleFilter(){ document.getElementById('filter-panel').classList.add('open') }
+function closeFilter(){ document.getElementById('filter-panel').classList.remove('open') }
+function applyFilters(){
+  let prods = window._products || [];
+  let activeCats = Array.from(document.querySelectorAll('.cat-filter-chip.active')).map(c=>c.textContent);
+  let activeSubs = Array.from(document.querySelectorAll('.subcat-filter-chip.active')).map(c=>c.dataset.subcategory);
+  let activePrice = document.querySelector('.price-chip.active');
+  let filtered = prods;
+  if(activeCats.length > 0) filtered = filtered.filter(p => activeCats.includes(p.category||'Other'));
+  if(activeSubs.length > 0) filtered = filtered.filter(p => activeSubs.includes(p.subcategory||'Other'));
+  if(activePrice){
+    let min = parseFloat(activePrice.dataset.min);
+    let max = parseFloat(activePrice.dataset.max);
+    filtered = filtered.filter(p => p.price >= min && p.price <= max);
+  }
+  closeFilter();
+  renderProducts(filtered);
+  document.querySelector('.products-section h3').textContent = '🔍 Filtered Products ('+filtered.length+' results)';
+}
+document.addEventListener('click', function(e){
+  if(e.target.classList.contains('price-chip')){
+    document.querySelectorAll('.price-chip').forEach(c=>c.classList.remove('active'));
+    e.target.classList.add('active');
+  }
+});
+function updateCartCount(){
+  let cart = JSON.parse(localStorage.getItem('bd_cart')||'[]');
+  document.getElementById('cart-count').textContent = cart.reduce((s,i)=>s+(i.qty||1),0);
+}
+function openCart(){ alert('Cart coming soon!') }
+function escapeHtml(t){ return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
+loadData();
+</script>
+</body>
+</html>
